@@ -9,19 +9,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="USUARIO")
 public class UsuarioEntity {
 
 	@Id 
-	@GeneratedValue
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+		name = "UUID",
+		strategy = "org.hibernate.id.UUIDGenerator"
+	)
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	@Column
@@ -36,10 +45,10 @@ public class UsuarioEntity {
 	private Date modified;
 	@Column
 	private Date last_login;
-//	@Column(name = "token", updatable = false, nullable = false)
-//	@Type(type="uuid-char")
-//	private UUID token;
-
+	@PreUpdate
+	public void setLastLogin() {
+		this.last_login= new Date();
+	}
 	@GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
 	@GenericGenerator(
 		name = "UUID",
@@ -50,25 +59,14 @@ public class UsuarioEntity {
 	private UUID token;
 	@PrePersist
     public void setLastUpdate() {
+		this.created = new Date();
+		this.modified = new Date();
+		this.last_login= new Date();
+
         token = UUID.randomUUID();
     }
-
+	
 	@Column
-	private boolean isactive;
-
-	public UsuarioEntity(String name, String email, String password, Date created, Date modified, Date last_login,
-			boolean isactive) {
-		this.name = name;
-		this.email = email;
-		this.password = password;
-
-		this.created = created;
-		this.modified = modified;
-		this.last_login = last_login;
-		this.isactive = isactive;
-	}
-
-	public UsuarioEntity() {
-	}
+	 private boolean isactive;
 
 }

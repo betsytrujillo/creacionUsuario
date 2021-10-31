@@ -2,9 +2,13 @@ package cl.pruebajava.creacionusuario.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Phone {
 
 	@JsonProperty("number")
@@ -13,16 +17,5 @@ public class Phone {
 	public String cityCode;
 	@JsonProperty("countryCode")
 	public String countryCode;
-
-	public Phone() {
-
-	}
-
-	public Phone(String number, String cityCode, String countryCode) {
-		super();
-		this.number = number;
-		this.cityCode = cityCode;
-		this.countryCode = countryCode;
-	}
 
 }

@@ -5,9 +5,13 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Response {
 
 	@JsonProperty("usuario")
@@ -25,20 +29,5 @@ public class Response {
 	@JsonProperty("isactive")
 	private boolean isactive;
 
-	public Response() {
-
-	}
-
-	public Response(Usuario usuario, String id, Date created, Date modified, Date last_login, UUID token,
-			boolean isactive) {
-		super();
-		this.usuario = usuario;
-		this.id = id;
-		this.created = created;
-		this.modified = modified;
-		this.last_login = last_login;
-		this.token = token;
-		this.isactive = isactive;
-	}
 
 }

@@ -1,43 +1,36 @@
 package cl.pruebajava.creacionusuario.controller;
 
-
 import javax.validation.Valid;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.pruebajava.creacionusuario.dto.Response;
 import cl.pruebajava.creacionusuario.dto.Usuario;
 import cl.pruebajava.creacionusuario.exceptions.EmailExisteException;
 import cl.pruebajava.creacionusuario.service.interfaces.UsuarioInterfaceService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/createUser")
+@Slf4j
+public class CreateUsuarioController{
+	@Autowired
+	UsuarioInterfaceService usuarioIS;
 
-public class CreateUsuarioController {
-	private static final Logger logger = Logger.getLogger(CreateUsuarioController.class);
+	@PostMapping(value = "")
+	public ResponseEntity<Response> createUsuario(@Valid @Validated @RequestBody Usuario user) throws EmailExisteException{
+		Response userResponse = new Response();
 
-	@Autowired UsuarioInterfaceService usuarioIS;
-	@RequestMapping(method = RequestMethod.POST, path="")
-	public ResponseEntity <Response> createUsuario ( @Valid @RequestBody Usuario user) throws EmailExisteException  {
-		Response userResponse= new Response();
-		
-		try {
-			
-			userResponse=	usuarioIS.createUsuario(user);
-		} catch (EmailExisteException e) {
-			logger.error("Email existe en Base de Datos");
-			throw new EmailExisteException();
-		}
-		
-			return new ResponseEntity<Response>(userResponse,HttpStatus.CREATED);
-	
+		userResponse = usuarioIS.createUsuario(user);
+		return new ResponseEntity<Response>(userResponse, HttpStatus.CREATED);
+
 	}
 
 }

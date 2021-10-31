@@ -25,7 +25,7 @@ class CreacionUsuarioApplicationTests {
 	
 	private Usuario  setValuesUsr() {
 		Usuario dtoUser = new Usuario();
-		dtoUser.setEmail	("pruebajava@gmail.com");
+		dtoUser.setEmail	("pruebajava1@gmail,com");
 		dtoUser.setName		("Usuario Prueba");
 		dtoUser.setPassword	("454545");
 		List<Phone> phones = new ArrayList();
@@ -43,7 +43,7 @@ class CreacionUsuarioApplicationTests {
 	void contextLoads() {
 	try {
 			
-			Response usr=	us.createUsuario(this.setValuesUsr());
+			Response usr=	us.createUsuario(this.setValuesUsr() );
 			//OK cuando ntreega ID objeto d respuesta
 				assertThat(usr.getId().length()>0);
 			} catch (Exception e) {
@@ -65,7 +65,10 @@ class CreacionUsuarioApplicationTests {
 				//se espera un 400, por que el correo ya existe
 				assertThat(true);
 				log.error("CODIGO DE ERROR-->" + String.valueOf( e.getStatusCode()));
-			}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 		
 	}
 

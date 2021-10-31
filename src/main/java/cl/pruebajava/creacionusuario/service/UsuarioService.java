@@ -1,10 +1,15 @@
 package cl.pruebajava.creacionusuario.service;
 
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.log4j.Logger;
+import javax.validation.ConstraintViolation;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 
 import cl.pruebajava.creacionusuario.dto.Phone;
 import cl.pruebajava.creacionusuario.dto.Response;
@@ -16,75 +21,64 @@ import cl.pruebajava.creacionusuario.repository.interfaces.PhoneInterfaceRepo;
 import cl.pruebajava.creacionusuario.repository.interfaces.UsuarioInterfaceRepo;
 import cl.pruebajava.creacionusuario.service.interfaces.UsuarioInterfaceService;
 import cl.pruebajava.creacionusuario.service.mapper.implement.UsuarioMapperImpl;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-
+@Slf4j
 public class UsuarioService implements UsuarioInterfaceService {
-	private static final Logger logger = Logger.getLogger(UsuarioService.class);
-
+//	private static final Logger logger = Logger.getLogger(UsuarioService.class);
 
 	@Autowired
-	UsuarioInterfaceRepo usuarioIR;
+	UsuarioInterfaceRepo usuarioRepository;
 	@Autowired
-	PhoneInterfaceRepo phoneIR;
+	PhoneInterfaceRepo phoneRepository;
 
 	@Override
 	public Response createUsuario(Usuario user) throws EmailExisteException {
 		// TODO Auto-generated method stub
 
-		logger.info("Servicio createUsuario iniciado...");
+		log.info("Servicio createUsuario iniciado...");
 
 		Response response = new Response();
 
-		if(!usuarioIR.findByEmail(user.getEmail()).isEmpty()){
-			logger.error("Error:[" + user.getEmail() + "] Correo ingresado ya existe en base de datos");
+		if (!usuarioRepository.findByEmail(user.getEmail()).isEmpty()) {
+			log.error("Error:{} Correo ingresado ya existe en base de datos", user.getEmail());
+
 			throw new EmailExisteException();
 
 		}
-
-		UsuarioEntity usuarioE;
+		UsuarioEntity usuarioEntity;
 
 		UsuarioMapperImpl usuarioMI = new UsuarioMapperImpl();
-
-		usuarioE = usuarioMI.usuario2usuarioEntity(user);
-
-		GregorianCalendar gcalendar = new GregorianCalendar();
-		usuarioE.setCreated(gcalendar.getTime());
-		usuarioE.setLast_login(gcalendar.getTime());
-		usuarioE.setModified(gcalendar.getTime());
-		usuarioE.setIsactive(true);
-		
-		
+		usuarioEntity = usuarioMI.usuario2usuarioEntity(user);
+		usuarioEntity.setIsactive(true);
 
 		try {
-			UsuarioEntity responseUE = usuarioIR.save(usuarioE);
+			UsuarioEntity responseUserEntity = usuarioRepository.save(usuarioEntity);
 
-			logger.info("El usuario se ha creado con exito,ID=" + responseUE.getId().toString());
+			log.info("El usuario se ha creado con exito,ID= {}", responseUserEntity.getId());
+
 			for (Phone phone : user.getPhones()) {
-				PhoneEntity phoneE = new PhoneEntity();
+				PhoneEntity phoneEntity = new PhoneEntity();
 
-				phoneE.setCountrycode(phone.getCountryCode());
-				phoneE.setIdUsuario(responseUE.getId());
-				phoneE.setNumber(phone.getNumber());
-				phoneIR.save(phoneE);
+				ModelMapper modelMapper = new ModelMapper();
+				phoneEntity = modelMapper.map(phone, PhoneEntity.class);
+				phoneEntity.setIdUsuario(responseUserEntity.getId());
+				phoneRepository.save(phoneEntity);
 
 			}
-			response.setCreated(responseUE.getCreated());
-			response.setId(responseUE.getId().toString());
-			response.setIsactive(responseUE.isIsactive());
-			response.setLast_login(responseUE.getLast_login());
-			response.setModified(responseUE.getModified());
-			logger.info("Token= " + responseUE.getToken());
+			response.setCreated(responseUserEntity.getCreated());
+			response.setId(responseUserEntity.getId().toString());
+			response.setIsactive(responseUserEntity.isIsactive());
+			response.setLast_login(responseUserEntity.getLast_login());
+			response.setModified(responseUserEntity.getModified());
+			log.info("Token= " + responseUserEntity.getToken());
 
-			response.setToken(responseUE.getToken());
+			response.setToken(responseUserEntity.getToken());
 			response.setUsuario(user);
 		} catch (Exception e) {
-			logger.info(e.getLocalizedMessage());
+			log.info(e.getLocalizedMessage());
 		}
-
-		
-
-		
 
 		return response;
 	}

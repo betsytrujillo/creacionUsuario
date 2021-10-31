@@ -8,11 +8,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="PHONE")
 public class PhoneEntity {
 	@Id 
@@ -27,16 +31,5 @@ public class PhoneEntity {
 	private String countrycode;
 	@Column
 	private UUID idUsuario;
-	
-	
-	public PhoneEntity(String number, String citycode, String countrycode, UUID idUsuario) {
-		this.number = number;
-		this.citycode = citycode;
-		this.countrycode = countrycode;
-		this.idUsuario = idUsuario;
-	}
-	public PhoneEntity() {
-		// TODO Auto-generated constructor stub
-	}
 
 }
