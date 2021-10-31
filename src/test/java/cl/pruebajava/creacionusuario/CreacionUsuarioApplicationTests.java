@@ -29,7 +29,7 @@ class CreacionUsuarioApplicationTests {
 		dtoUser.setName		("Usuario Prueba");
 		dtoUser.setPassword	("454545");
 		List<Phone> phones = new ArrayList();
-		//se agrega solo un telefono de prueba
+		//se agrega telefono de prueba
 		Phone phone = new Phone("7654321", "11", "30");
 		phones.add(phone);
 		
@@ -58,7 +58,7 @@ class CreacionUsuarioApplicationTests {
 		this.setValuesUsr();
 			try {
 				us.createUsuario(this.setValuesUsr());
-				//en esta llamada se espera la caida
+				//error por email existente
 				us.createUsuario(this. setValuesUsr());
 				
 			} catch (EmailExisteException e) {
