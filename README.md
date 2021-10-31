@@ -3,7 +3,7 @@ README
 La solución utiliza:
 ● Banco de datos en memoria: H2.
 ● Proceso de build vía Maven.
-● Persistencia con JPA. Hibernate
+● Persistencia con JPA
 ● Framework SpringBoot.
 ● Java 11
 ● La base de datos se crea ejecutando el .jar de h2, el nombre de la BD es test
